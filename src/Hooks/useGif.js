@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from 'axios';
 
 const useGif = (tag) => {
@@ -8,7 +8,7 @@ const useGif = (tag) => {
   const [gif, setGif] = useState('');
   const [spinner, setSpinner] = useState(false);
 
-  const getData = async (tag) => {
+  const getData = useCallback(async (tag) => {
     try {
       setSpinner(true);
       const { data } = await axios.get(tag ? `${url}&tag=${tag}` : url);
@@ -19,11 +19,11 @@ const useGif = (tag) => {
     } finally {
       setSpinner(false);
     }
-  };
+  }, [tag, url]);
 
   useEffect(() => {
-    getData(tag); // initial load with tag
-  }, []);
+    getData(tag);
+  }, [getData]);
 
   return { gif, spinner, getData };
 };
